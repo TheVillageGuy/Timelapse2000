@@ -24,9 +24,7 @@ namespace RimworldRendererMod
 
             Listing_Standard listing = new Listing_Standard();
             listing.Begin(inRect);
-            listing.CheckboxLabeled("Test Toggle", ref Settings.TestToggle, "Some Tooltip.");
-            listing.Label("Test value below :D");
-            Settings.TestValue = listing.Slider(Settings.TestValue, 0f, 50f);
+            Settings.DefaultBaseImagesPath = listing.TextEntryLabeled("UI_ImagePathDir", Settings.DefaultBaseImagesPath, 1);
             listing.End();
 
             base.DoSettingsWindowContents(inRect);
