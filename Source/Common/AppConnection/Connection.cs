@@ -1,8 +1,9 @@
-﻿using System.IO.Pipes;
+﻿using System;
+using System.IO.Pipes;
 
 namespace RimworldRendererMod.AppConnection
 {
-    public abstract class Connection
+    public abstract class Connection : IDisposable
     {
         public PipeStream Pipe { get; }
 
@@ -25,6 +26,8 @@ namespace RimworldRendererMod.AppConnection
         {
             stream.Write(data);
         }
+
+        public abstract void Dispose();
     }
 
     public class ServerConnection : Connection
@@ -38,6 +41,17 @@ namespace RimworldRendererMod.AppConnection
         {
             (Pipe as NamedPipeServerStream).WaitForConnection();
         }
+
+        public void Disconnect()
+        {
+            (Pipe as NamedPipeServerStream).Disconnect();
+        }
+
+        public override void Dispose()
+        {
+            (Pipe as NamedPipeServerStream).Disconnect();
+            Pipe.Dispose();
+        }
     }
 
     public class ClientConnection : Connection
@@ -50,6 +64,12 @@ namespace RimworldRendererMod.AppConnection
         public void Connect(int timeout = 5000)
         {
             (Pipe as NamedPipeClientStream).Connect(timeout);
+        }
+
+        public override void Dispose()
+        {
+            Pipe.Close();
+            Pipe.Dispose();
         }
     }
 }

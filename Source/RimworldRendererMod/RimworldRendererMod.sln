@@ -5,6 +5,10 @@ VisualStudioVersion = 15.0.27428.2015
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RimworldRendererMod", "RimworldRendererMod.csproj", "{FC10585B-9182-4314-8F76-8AE4E0E5DB87}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "..\Common\Common.csproj", "{80E401EB-5BD9-4A72-885E-5924E9719FF7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteRenderer", "..\RemoteRenderer\RemoteRenderer.csproj", "{486C249F-6853-4D45-870B-476349FBE29B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{FC10585B-9182-4314-8F76-8AE4E0E5DB87}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FC10585B-9182-4314-8F76-8AE4E0E5DB87}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FC10585B-9182-4314-8F76-8AE4E0E5DB87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80E401EB-5BD9-4A72-885E-5924E9719FF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80E401EB-5BD9-4A72-885E-5924E9719FF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80E401EB-5BD9-4A72-885E-5924E9719FF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80E401EB-5BD9-4A72-885E-5924E9719FF7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{486C249F-6853-4D45-870B-476349FBE29B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{486C249F-6853-4D45-870B-476349FBE29B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{486C249F-6853-4D45-870B-476349FBE29B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{486C249F-6853-4D45-870B-476349FBE29B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

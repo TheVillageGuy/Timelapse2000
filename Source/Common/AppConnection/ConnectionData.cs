@@ -9,5 +9,11 @@ namespace RimworldRendererMod.AppConnection
     {
         public byte ID;
         public string Info;
+
+        public ConnectionData(byte id, string info)
+        {
+            this.ID = id;
+            this.Info = info;
+        }
     }
 }
