@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>Rimworld Renderer</name>
+  <author>Epicguru (James B)</author>
+  <supportedVersions>
+    <li>1.0</li>
+  </supportedVersions>
+  <description>
+  Creates a video file from all the images created by the Progress Renderer mod! You want a timelapse? You got one!
+  </description>
+</ModMetaData>
