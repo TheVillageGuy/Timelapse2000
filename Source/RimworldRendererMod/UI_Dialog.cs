@@ -26,71 +26,25 @@ namespace RimworldRendererMod
 
         public override void DoWindowContents(Rect area)
         {
-            //Text.Anchor = TextAnchor.MiddleLeft;
-            //float y = 0;
+            float y = 0f;
 
-            //Text.Font = GameFont.Medium;
+            Text.Anchor = TextAnchor.UpperCenter;
+            Text.Font = GameFont.Medium;
+            Widgets.Label(new Rect(0, y, area.width, 60f), new GUIContent("ModDisplayName".Translate(), MenuOption.Icon, "By Epicguru (James B)"));
+            y += 60f;
 
-            //Rect titleRect = new Rect(0, y, area.width, 30);
-            //Widgets.Label(titleRect, "StartupImpactStartupTime".Translate(ProfilerBar.TimeText(StartupImpact.loadingTime)));
-            //y += titleRect.height;
-
-            //Rect profileRect = new Rect(0, y, area.width - 16, 46);
-            //ProfilerBar.Draw(profileRect, metricsTotal, categoriesTotal, StartupImpact.loadingTime, categoryHints, categoryColors, defaultColor);
-            //y += profileRect.height + 4;
-
-            //Rect nonmodsTitleRect = new Rect(0, y, area.width, 30);
-            //Widgets.Label(nonmodsTitleRect, "StartupImpactStartupNonmods".Translate(ProfilerBar.TimeText(basegameLoadingTime)));
-            //y += nonmodsTitleRect.height;
-
-            //Rect nonmodsProfileRect = new Rect(0, y, area.width - 16, 46);
-            //ProfilerBar.Draw(nonmodsProfileRect, StartupImpact.baseGameProfiler.metrics, categoriesNonmods, basegameLoadingTime, categoryHintsNonmods, categoryColorsNonmods, defaultColor);
-            //y += nonmodsProfileRect.height + 8;
-
-            //Rect modsTitleRect = new Rect(0, y, area.width, 30);
-            //Widgets.Label(modsTitleRect, "StartupImpactStartupMods".Translate(ProfilerBar.TimeText(modsLoadingTime)));
-            //y += titleRect.height + 8;
-            //Text.Font = GameFont.Small;
-
-            //table.Start(0, y, area.width, area.height - y - 55);
-
-            //int row = 0;
-            //foreach (ModInfo info in mods)
-            //{
-            //    if (Widgets.ButtonImage(table.cell(0, row), eye, info.hideInUi ? Color.white : Color.grey))
-            //    {
-            //        info.hideInUi = !info.hideInUi;
-            //        redoStats();
-            //    }
-
-            //    GUI.color = info.hideInUi ? Color.grey : Color.white;
-
-            //    table.text(1, row, info.mod.Name);
-
-            //    table.text(2, row, ProfilerBar.TimeText(info.profile.totalImpact));
-
-            //    ProfilerBar.Draw(table.cell(3, row), info.profile.metrics, categories, Math.Max(maxImpact, info.profile.totalImpact), categoryHints, categoryColors, defaultColor);
-
-            //    row++;
-            //}
-
-            //table.Stop();
+            //Widgets.FillableBar(new Rect(0, y, area.width, 20f), 0.2f);
+            //y += 20f;
 
 
-            //GUI.color = infoColor;
-            //Text.Anchor = TextAnchor.LowerLeft;
-            //Rect rect4 = new Rect(0, area.height - 35f, area.width - 120, 35f);
-            //string verinfo = "StartupImpactVerinfo".Translate(StartupImpact.GetVersion(), StartupImpact.baseGameProfiler.profilerType.ToString().ToLowerInvariant());
-            //if (failedMeasuringLoadingTime) verinfo += "StartupImpactFailedMeasuringLoadingTime".Translate();
-            //Widgets.Label(rect4, verinfo);
 
-            //GUI.color = Color.white;
-            //Rect rect3 = new Rect(area.width - 120, area.height - 35f, 120, 35f);
-            //if (Widgets.ButtonText(rect3, "Close".Translate(), true, false, true))
-            //{
-            //    Close();
-            //}
-            //Text.Anchor = TextAnchor.UpperLeft;
+            // Close button...
+            GUI.color = Color.white;
+            Rect rect3 = new Rect(area.width - 120, area.height - 35f, 120, 35f);
+            if (Widgets.ButtonText(rect3, "UI_Close".Translate(), true, false, true))
+            {
+                Close();
+            }
         }
     }
 }

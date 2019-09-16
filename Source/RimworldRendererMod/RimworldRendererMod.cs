@@ -34,7 +34,7 @@ namespace RimworldRendererMod
 
         public override string SettingsCategory()
         {
-            return "RimworldRenderer".Translate();
+            return "ModDisplayName".Translate();
         }
     }
 }

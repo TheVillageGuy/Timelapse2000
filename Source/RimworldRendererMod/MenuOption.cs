@@ -1,8 +1,5 @@
 ﻿using Harmony;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 using Verse;
 
@@ -13,14 +10,20 @@ namespace RimworldRendererMod
     {
         static void Prefix(List<ListableOption> optList)
         {
-            if (optList.Count == 0) return;
-            if (optList[0].GetType() != typeof(ListableOption_WebLink)) return;
+            if (optList.Count == 0)
+            {
+                return;
+            }
+            if (optList[0].GetType() != typeof(ListableOption_WebLink))
+            {
+                return;
+            }
 
-            optList.Add(new ListableOption_WebLink("RimworldRenderer".Translate(), delegate () {
+            optList.Add(new ListableOption_WebLink("MainMenuOptionLabel".Translate(), delegate () {
                 Find.WindowStack.Add(new UI_Dialog());
-            }, icon));
+            }, Icon));
         }
 
-        public static readonly Texture2D icon = ContentFinder<Texture2D>.Get("Icon", true);
+        public static readonly Texture2D Icon = ContentFinder<Texture2D>.Get("Icon", true);
     }
 }
