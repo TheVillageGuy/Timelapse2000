@@ -6,6 +6,8 @@ namespace RimworldRendererMod.AppConnection
     public abstract class Connection : IDisposable
     {
         public PipeStream Pipe { get; }
+        public NamedPipeServerStream ServerPipe { get { return Pipe as NamedPipeServerStream; } }
+        public PipeStream ClientPipe { get { return Pipe as NamedPipeClientStream; } }
 
         private ConnectionStream stream;
 
@@ -34,7 +36,7 @@ namespace RimworldRendererMod.AppConnection
     {
         protected override PipeStream CreatePipe(string id, PipeDirection dir, int count)
         {
-            return new NamedPipeServerStream(id, dir, count);
+            return new NamedPipeServerStream(id, dir, count, PipeTransmissionMode.Message, PipeOptions.Asynchronous);
         }
 
         public void WaitForConnection()
@@ -58,12 +60,20 @@ namespace RimworldRendererMod.AppConnection
     {
         protected override PipeStream CreatePipe(string id, PipeDirection dir, int count)
         {
-            return new NamedPipeClientStream(".", id, dir);
+            return new NamedPipeClientStream(".", id, dir, PipeOptions.Asynchronous);
         }
 
         public void Connect(int timeout = 5000)
         {
-            (Pipe as NamedPipeClientStream).Connect(timeout);
+            try
+            {
+                (Pipe as NamedPipeClientStream).Connect(timeout);
+            }
+            catch(Exception e)
+            {
+                // Huh. That sucks.
+                Console.WriteLine(e);
+            }
         }
 
         public override void Dispose()

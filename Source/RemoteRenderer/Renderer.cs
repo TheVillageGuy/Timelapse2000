@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Accord.Video.FFMPEG;
+using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
 
 namespace RimworldRendererMod.RemoteRenderer
@@ -21,7 +19,6 @@ namespace RimworldRendererMod.RemoteRenderer
         public int Bitrate = 1000 * 1000;
         public VideoCodec Codec = VideoCodec.MPEG4;
         public InterpolationMode InterpolationMode = InterpolationMode.Bicubic;
-        public bool RenderPreview = false;
 
         public Action Done;
 
@@ -46,6 +43,7 @@ namespace RimworldRendererMod.RemoteRenderer
 
         private void RunRender()
         {
+
             Stopwatch watch = new Stopwatch();
             using (var writer = new VideoFileWriter())
             {
@@ -60,10 +58,10 @@ namespace RimworldRendererMod.RemoteRenderer
                     string path = Images[i];
                     string name = new FileInfo(path).Name;
 
-                    //Program.SetStatusSafe($"Loading {name}...");
+                    Program.SetStatusSafe($"Loading {name}...");
                     Bitmap bitmap = new Bitmap(new FileStream(path, FileMode.Open));
 
-                    //Program.SetStatusSafe($"Resizing {name}...");
+                    Program.SetStatusSafe($"Resizing {name}...");
                     Bitmap frame;
                     if (bitmap.Width == Width && bitmap.Height == Height)
                     {
@@ -76,21 +74,15 @@ namespace RimworldRendererMod.RemoteRenderer
                             bitmap.Dispose();
                     }
 
-                    if (RenderPreview)
-                    {
-                        //Program.SetStatusSafe("Rending preview...");
-                        //Program.SetPreview(frame);
-                    }
-
                     for (int j = 0; j < FramesPerImage; j++)
                     {
-                        //Program.SetStatusSafe($"Writing {name}: Frame {j + 1} of {FramesPerImage}.");
+                        Program.SetStatusSafe($"Writing {name}: Frame {j + 1} of {FramesPerImage}.");
                         writer.WriteVideoFrame(frame);
                     }
 
                     frame.Dispose();
 
-                    //Program.SetProgressSafe((float)(i + 1) / Images.Length);
+                    Program.SetProgressSafe((float)(i + 1) / Images.Length);
 
                     System.GC.Collect();
 
@@ -103,7 +95,7 @@ namespace RimworldRendererMod.RemoteRenderer
                         sum = sum.Add(elapsed);
                     }
 
-                    //Program.SetEstimatedTimeSafe(sum.ToString(@"hh\:mm\:ss"));
+                    Program.SetEstimatedTimeSafe(sum.ToString(@"hh\:mm\:ss"));
                 }
 
                 writer.Close();
