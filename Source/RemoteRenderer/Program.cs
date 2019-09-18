@@ -67,7 +67,9 @@ namespace RimworldRendererMod.RemoteRenderer
 
             Run();
 
+#if DEBUG
             Console.ReadKey();
+#endif
         }
 
         private static void Run()
@@ -76,8 +78,7 @@ namespace RimworldRendererMod.RemoteRenderer
             Console.WriteLine($"Hello world! Waiting {SLEEP}ms to allow for program to register and set up.");
             Thread.Sleep(SLEEP);
 
-
-            RunServer();
+            //RunServer();
 
             Thread.Sleep(50);
 
@@ -106,6 +107,16 @@ namespace RimworldRendererMod.RemoteRenderer
             ServerConnection.UponRecieve = (data) =>
             {
                 Console.WriteLine($"Server: [{data.ID}] {data.Info}");
+                if(data.ID == DataID.Error)
+                {
+                    Console.WriteLine($"Error from client, shutting down...");
+                    ServerConnection.ServerConnection.Disconnect();
+                }
+                if(data.ID == DataID.Done)
+                {
+                    Console.WriteLine($"Client is done! Shutting down...");
+                    ServerConnection.ServerConnection.Disconnect();
+                }
             };
             ServerConnection.StartRead();
         }

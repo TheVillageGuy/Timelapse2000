@@ -51,7 +51,7 @@ namespace RimworldRendererMod.AppConnection
 
         public override void Dispose()
         {
-            (Pipe as NamedPipeServerStream).Disconnect();
+            Disconnect();
             Pipe.Dispose();
         }
     }
