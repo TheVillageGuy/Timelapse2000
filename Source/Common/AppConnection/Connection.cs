@@ -41,17 +41,18 @@ namespace RimworldRendererMod.AppConnection
 
         public void WaitForConnection()
         {
-            (Pipe as NamedPipeServerStream).WaitForConnection();
+             ServerPipe.WaitForConnection();
         }
 
         public void Disconnect()
         {
-            (Pipe as NamedPipeServerStream).Disconnect();
+            if(ServerPipe.IsConnected)
+                ServerPipe.Disconnect();
         }
 
         public override void Dispose()
         {
-            (Pipe as NamedPipeServerStream).Disconnect();
+            Disconnect();
             Pipe.Dispose();
         }
     }

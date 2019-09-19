@@ -1,5 +1,5 @@
 ﻿using Accord.Video.FFMPEG;
-using RimworldRendererMod.AppConnection;
+using RimworldRendererMod.Common;
 using RimworldRendererMod.RemoteRenderer.IO;
 using System;
 using System.Drawing.Drawing2D;
@@ -10,10 +10,10 @@ namespace RimworldRendererMod.RemoteRenderer
     public static class Program
     {
         private static bool IsRendering = false;
-        private static ThreadedConnection Connection;
-        private static ThreadedConnection ServerConnection;
+        private static ClientConnection Connection;
         private static Renderer Renderer;
 
+        private static string[] files;
         private static string images;
         private static string output;
         private static int resX;
@@ -76,15 +76,10 @@ namespace RimworldRendererMod.RemoteRenderer
             Console.WriteLine($"Hello world! Waiting {SLEEP}ms to allow for program to register and set up.");
             Thread.Sleep(SLEEP);
 
-
-            RunServer();
-
-            Thread.Sleep(50);
-
             RunClient();
 
-            // TODO put me somewhere better.
-            while (Connection.IsReading && !Connection.IsShuttingDown)
+            // Loop and send updates when necessary.
+            while (Connection != null && Connection.IsConnected)
             {
                 if (IsRendering)
                 {
@@ -94,40 +89,45 @@ namespace RimworldRendererMod.RemoteRenderer
             }
         }
 
-        private static void RunServer()
-        {
-            ServerConnection = new ThreadedConnection(new ServerConnection());
-            ServerConnection.UponReadConnect = () =>
-            {
-                Console.WriteLine("Upon connect.");
-                ServerConnection.Write(DataID.Start, "Go!");
-
-            };
-            ServerConnection.UponRecieve = (data) =>
-            {
-                Console.WriteLine($"Server: [{data.ID}] {data.Info}");
-            };
-            ServerConnection.StartRead();
-        }
-
         private static void RunClient()
         {
-            Connection = new ThreadedConnection(new ClientConnection());
-            Connection.UponRecieve = UponMessage;
-            Connection.StartRead();
+            Connection = new ClientConnection("Rimworld_Renderer_Mod_Pipeline");
+            Connection.UponMessage = UponMessage;
+            Connection.Connect();
 
-            int timeout = 5000;
-            Console.WriteLine($"Attempting to connect to server. Timeout: {timeout}ms.");
-            Connection.ClientConnection.Connect(timeout);
-
-            if (!Connection.ClientConnection.Pipe.IsConnected)
+            if (!Connection.IsConnected)
             {
-                Console.WriteLine("Failed to establish connection. Exiting.");
-                return;
+                Console.WriteLine("Failed to establish connection to process runner. Stopping...");
+                Thread.Sleep(2000);
+                Environment.Exit(1);
             }
 
-            Console.WriteLine("Established connection. Notifying server and starting read.");
-            Connection.Write(DataID.GoodToGo, "Ready.");
+
+            string error = CheckReady();
+            if(error != null)
+            {
+                Console.WriteLine($"Error, cannot render: {error}");
+                Connection.Write(DataID.Error, error);
+                Shutdown();
+                return;
+            }
+            else
+            {
+                Connection.StartRead();
+                Connection.Write(DataID.Connected, "Ready.");
+
+            }
+        }
+
+        private static string CheckReady()
+        {
+            files = FileIO.GetAllFilesSorted(images, "*.png", "*.jpg");
+            if (files == null || files.Length < 2)
+            {
+                return $"Needs at least two images to render! Found {files.Length}.";
+            }
+
+            return null;
         }
 
         private static void UponMessage(ConnectionData data)
@@ -140,15 +140,7 @@ namespace RimworldRendererMod.RemoteRenderer
                         break;
 
                     Console.WriteLine("Server has told client to start. Running...");
-                    IsRendering = true;
-
-                    string[] files = FileIO.GetAllFilesSorted(images, "*.png", "*.jpg");
-                    if(files == null || files.Length < 2)
-                    {
-                        Connection.Write(DataID.Error, $"Needs at least two images to render! Found {files.Length}.");
-                        Shutdown();
-                        break;
-                    }
+                    IsRendering = true;                    
 
                     Renderer = new Renderer(output, files);
                     Renderer.Width = resX;
@@ -167,16 +159,6 @@ namespace RimworldRendererMod.RemoteRenderer
                     };
 
                     Renderer.StartRender();
-
-                    break;
-
-                case DataID.Stop:
-
-                    if (!IsRendering)
-                        break;
-
-                    Console.WriteLine("Server has requested a cancel. Stopping...");
-                    // TODO stop render.
 
                     break;
 

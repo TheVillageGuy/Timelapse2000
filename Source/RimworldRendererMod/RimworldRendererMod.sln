@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "..\Common\Common.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteRenderer", "..\RemoteRenderer\RemoteRenderer.csproj", "{486C249F-6853-4D45-870B-476349FBE29B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing", "..\Testing\Testing.csproj", "{5D2AD930-79AF-4DB8-A14F-F7AB64B1FA42}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonV2", "..\CommonV2\CommonV2.csproj", "{3472C90A-FBBD-4A0A-B4DF-348517CC3B1C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{486C249F-6853-4D45-870B-476349FBE29B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{486C249F-6853-4D45-870B-476349FBE29B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{486C249F-6853-4D45-870B-476349FBE29B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D2AD930-79AF-4DB8-A14F-F7AB64B1FA42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D2AD930-79AF-4DB8-A14F-F7AB64B1FA42}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D2AD930-79AF-4DB8-A14F-F7AB64B1FA42}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D2AD930-79AF-4DB8-A14F-F7AB64B1FA42}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3472C90A-FBBD-4A0A-B4DF-348517CC3B1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3472C90A-FBBD-4A0A-B4DF-348517CC3B1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3472C90A-FBBD-4A0A-B4DF-348517CC3B1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3472C90A-FBBD-4A0A-B4DF-348517CC3B1C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
