@@ -30,7 +30,12 @@ namespace Testing
                 }
                 if(data.ID == DataID.Update)
                 {
-                    Console.WriteLine("UPD: " + data.Info);
+                    string[] split = data.Info.Split(',');
+                    string status = split[0];
+                    float percentage = float.Parse(split[1]);
+                    string timeLeft = split[2];
+
+                    Console.WriteLine($"UPD:\nStatus: {status}\nProgress: {percentage*100f:F0}%\nETA: {timeLeft}");
                 }
             };
 

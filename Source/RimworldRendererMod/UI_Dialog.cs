@@ -11,6 +11,8 @@ namespace RimworldRendererMod
     class UI_Dialog : Window
     {
         public static string Status = "Waiting...";
+        public static string ETA = "---";
+        public static float ProgressBarPercentage = 0f;
         public override Vector2 InitialSize
         {
             get
@@ -43,8 +45,9 @@ namespace RimworldRendererMod
             }
             y += 50f;
 
-            Widgets.FillableBar(new Rect(0, y, area.width, 20f), 0.2f);
+            Widgets.FillableBar(new Rect(0, y, area.width, 20f), ProgressBarPercentage);
             y += 20f;
+            Widgets.Label(new Rect(0, y, area.width, 40f), $"Done: {ProgressBarPercentage * 100f:F0}%\nETA: {ETA}");
 
             // Close button...
             GUI.color = Color.white;
