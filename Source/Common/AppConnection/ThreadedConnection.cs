@@ -24,16 +24,16 @@ namespace RimworldRendererMod.AppConnection
             Connection = connection;
         }
 
-        public void StartRead()
+        public void StartRead(int timeout = 5000)
         {
             if (readThread != null)
                 return;
 
-            readThread = new Thread(RunRead);
+            readThread = new Thread(new ParameterizedThreadStart(RunRead));
             readThread.Name = "Connection read thread";
             IsShuttingDown = false;
             IsReading = true;
-            readThread.Start();
+            readThread.Start(timeout);
         }
 
         public void Shutdown()
@@ -41,8 +41,9 @@ namespace RimworldRendererMod.AppConnection
             IsShuttingDown = true;
         }
 
-        private void RunRead()
+        private void RunRead(object vars)
         {
+            int timeout = (int)vars;
             try
             {
                 if(Connection.ServerPipe != null)
@@ -51,7 +52,27 @@ namespace RimworldRendererMod.AppConnection
                     Console.WriteLine($"[{CS}] Waiting for connection to start read...");
                     s.Start();
 
-                    Connection.ServerPipe.WaitForConnection();
+                    bool done = false;
+                    var result = Connection.ServerPipe.BeginWaitForConnection((data) =>
+                    {
+                        if (data?.IsCompleted ?? false)
+                            done = true;
+                    }, null);
+
+                    while (!done)
+                    {
+                        if (IsShuttingDown)
+                        {
+                            Connection.ServerPipe.EndWaitForConnection(null);
+                            return;
+                        }
+                        if (s.Elapsed.TotalMilliseconds > timeout)
+                        {
+                            return;
+                        }
+
+                        Thread.Sleep(5);
+                    }
 
                     s.Stop();
                     Console.WriteLine($"[{CS}] Got connection! Took {s.Elapsed.TotalMilliseconds:F0}ms.");
@@ -69,6 +90,8 @@ namespace RimworldRendererMod.AppConnection
                             return;
                         }
                         Thread.Sleep(5);
+                        if (s.Elapsed.TotalMilliseconds > timeout)
+                            return;
                     }
 
                     s.Stop();
@@ -87,7 +110,7 @@ namespace RimworldRendererMod.AppConnection
                     var read = Connection.ReadData();
                     UponRecieve?.Invoke(read);
                 }
-                Console.WriteLine("Pipe connection closed, stopping read.");
+                Console.WriteLine($"[{CS}] Pipe connection closed, stopping read.");
             }
             catch (Exception e)
             {
@@ -111,7 +134,7 @@ namespace RimworldRendererMod.AppConnection
         public void Dispose()
         {
             Shutdown();
-            Connection.Dispose();
+            Connection?.Dispose();
         }
     }
 }

@@ -67,7 +67,9 @@ namespace RimworldRendererMod.RemoteRenderer
 
             Run();
 
+#if DEBUG
             Console.ReadKey();
+#endif
         }
 
         private static void Run()

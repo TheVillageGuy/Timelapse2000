@@ -32,7 +32,13 @@ namespace RimworldRendererMod.AppConnection
 
         public ConnectionData Read()
         {
-            byte id = (byte)stream.ReadByte();
+            int idInt = stream.ReadByte();
+
+            if (idInt == -1) // This happens when the connection stops suddenly.
+                return default(ConnectionData);
+
+            byte id = (byte)idInt;
+
             int length = stream.ReadByte();
             byte[] bytes = new byte[length];
             stream.Read(bytes, 0, length);

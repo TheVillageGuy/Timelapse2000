@@ -1,5 +1,6 @@
 ﻿
 using Harmony;
+using System.IO;
 using UnityEngine;
 using Verse;
 
@@ -7,6 +8,7 @@ namespace RimworldRendererMod
 {
     public class RimworldRendererMod : Mod
     {
+        public static string BaseFolder;
         public MyModSettings Settings;
 
         public RimworldRendererMod(ModContentPack content) : base(content)
@@ -16,7 +18,9 @@ namespace RimworldRendererMod
             var harmony = HarmonyInstance.Create("com.github.Epicguru.RimworldRendererMod");
             harmony.PatchAll();
 
-            Log.Message("Hello?>!?");
+            Log.Message("Patched in RimworldRenderer. Option should now be in main menu.");
+
+            BaseFolder = new DirectoryInfo(base.Content.AssembliesFolder).Parent.FullName;
         }
 
         public override void DoSettingsWindowContents(Rect inRect)

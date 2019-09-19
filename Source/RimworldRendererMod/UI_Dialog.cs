@@ -10,6 +10,7 @@ namespace RimworldRendererMod
     [StaticConstructorOnStartup]
     class UI_Dialog : Window
     {
+        public static string Status = "Waiting...";
         public override Vector2 InitialSize
         {
             get
@@ -33,10 +34,17 @@ namespace RimworldRendererMod
             Widgets.Label(new Rect(0, y, area.width, 60f), new GUIContent("ModDisplayName".Translate(), MenuOption.Icon, "By Epicguru (James B)"));
             y += 60f;
 
-            //Widgets.FillableBar(new Rect(0, y, area.width, 20f), 0.2f);
-            //y += 20f;
+            Label($"Status: {Status}");
 
+            if (Widgets.ButtonText(new Rect(0f, y, 250f, 40f), "Start"))
+            {
+                // TODO start.
+                Runner.StartRender();
+            }
+            y += 50f;
 
+            Widgets.FillableBar(new Rect(0, y, area.width, 20f), 0.2f);
+            y += 20f;
 
             // Close button...
             GUI.color = Color.white;
@@ -44,6 +52,15 @@ namespace RimworldRendererMod
             if (Widgets.ButtonText(rect3, "UI_Close".Translate(), true, false, true))
             {
                 Close();
+            }
+
+            Text.Anchor = TextAnchor.UpperLeft;
+
+            void Label(string s)
+            {
+                float h = Text.CalcHeight(s, area.width);
+                Widgets.Label(new Rect(0, y, area.width, h), s);
+                y += h + 0f;
             }
         }
     }
