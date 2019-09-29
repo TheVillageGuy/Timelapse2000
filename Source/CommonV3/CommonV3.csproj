@@ -4,20 +4,19 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{FC10585B-9182-4314-8F76-8AE4E0E5DB87}</ProjectGuid>
+    <ProjectGuid>{DAD49C7E-E6FA-42D7-85B0-732C5A89F9B4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RimworldRendererMod</RootNamespace>
-    <AssemblyName>RimworldRendererMod</AssemblyName>
+    <RootNamespace>CommonV3</RootNamespace>
+    <AssemblyName>CommonV3</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>false</DebugSymbols>
-    <DebugType>none</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\Assemblies\</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -25,47 +24,25 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\Assemblies\</OutputPath>
-    <DefineConstants>
-    </DefineConstants>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony">
-      <HintPath>Harmony\0Harmony.dll</HintPath>
-    </Reference>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="UnityEngine">
-      <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MenuOption.cs" />
-    <Compile Include="MyModSettings.cs" />
+    <Compile Include="NetBase.cs" />
+    <Compile Include="NetClient.cs" />
+    <Compile Include="NetData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RimworldRendererMod.cs" />
-    <Compile Include="Runner.cs" />
-    <Compile Include="UI_Dialog.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Harmony\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\CommonV2\CommonV2.csproj">
-      <Project>{3472c90a-fbbd-4a0a-b4df-348517cc3b1c}</Project>
-      <Name>CommonV2</Name>
-    </ProjectReference>
+    <Compile Include="NetServer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

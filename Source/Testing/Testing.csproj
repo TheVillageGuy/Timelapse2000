@@ -53,6 +53,10 @@
       <Project>{3472C90A-FBBD-4A0A-B4DF-348517CC3B1C}</Project>
       <Name>CommonV2</Name>
     </ProjectReference>
+    <ProjectReference Include="..\CommonV3\CommonV3.csproj">
+      <Project>{dad49c7e-e6fa-42d7-85b0-732c5a89f9b4}</Project>
+      <Name>CommonV3</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

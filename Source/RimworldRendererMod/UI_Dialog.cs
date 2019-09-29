@@ -40,7 +40,6 @@ namespace RimworldRendererMod
 
             if (Widgets.ButtonText(new Rect(0f, y, 250f, 40f), "Start"))
             {
-                // TODO start.
                 Runner.StartRender();
             }
             y += 50f;
