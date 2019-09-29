@@ -1,5 +1,5 @@
 ﻿using Accord.Video.FFMPEG;
-using RimworldRendererMod.Common;
+using RimworldRendererMod.CommonV3;
 using RimworldRendererMod.RemoteRenderer.IO;
 using System;
 using System.Drawing.Drawing2D;
@@ -10,7 +10,7 @@ namespace RimworldRendererMod.RemoteRenderer
     public static class Program
     {
         private static bool IsRendering = false;
-        private static ClientConnection Connection;
+        private static NetClient Client;
         private static Renderer Renderer;
 
         private static string[] files;
@@ -81,7 +81,7 @@ namespace RimworldRendererMod.RemoteRenderer
             RunClient();
 
             // Loop and send updates when necessary.
-            while (Connection != null && Connection.IsConnected)
+            while (Client != null && Client.Connected)
             {
                 if (IsRendering)
                 {
@@ -93,30 +93,41 @@ namespace RimworldRendererMod.RemoteRenderer
 
         private static void RunClient()
         {
-            Connection = new ClientConnection("Rimworld_Renderer_Mod_Pipeline");
-            Connection.UponMessage = UponMessage;
-            Connection.Connect();
-
-            if (!Connection.IsConnected)
+            Client = new NetClient();
+            Client.UponMessage = UponMessage;
+            Thread clientThread = new Thread(() =>
             {
-                Console.WriteLine("Failed to establish connection to process runner. Stopping...");
-                Thread.Sleep(2000);
-                Environment.Exit(1);
+                Client.Run(7171);
+            });
+            clientThread.Name = "Client thread";
+            clientThread.Start();
+
+            const int TIMEOUT = 5000;
+            Console.WriteLine($"Waiting {TIMEOUT} ms for connection or timeout.");
+            for (int i = 0; i < TIMEOUT / 10; i++)
+            {
+                Thread.Sleep(10);
+                if (Client.Connected)
+                    break;
             }
 
+            if (!Client.Connected)
+            {
+                Console.WriteLine($"Failed to establish connection to the server. Exiting.");
+                Environment.Exit(1);
+            }
 
             string error = CheckReady();
             if(error != null)
             {
                 Console.WriteLine($"Error, cannot render: {error}");
-                Connection.Write(DataID.Error, error);
+                Client.Write(new NetData().Write(NetData.ERROR).Write(error));
                 Shutdown();
                 return;
             }
             else
             {
-                Connection.StartRead();
-                Connection.Write(DataID.Connected, "Ready.");
+                Client.Write(new NetData().Write(NetData.READY));
 
             }
         }
@@ -132,11 +143,12 @@ namespace RimworldRendererMod.RemoteRenderer
             return null;
         }
 
-        private static void UponMessage(ConnectionData data)
+        private static void UponMessage(NetData data)
         {
-            switch (data.ID)
+            byte ID = data.ReadByte();
+            switch (ID)
             {
-                case DataID.Start:
+                case NetData.START:
 
                     if (IsRendering)
                         break;
@@ -157,7 +169,7 @@ namespace RimworldRendererMod.RemoteRenderer
                     {
                         IsRendering = false;
                         Console.WriteLine("Finished render!");
-                        Connection.Write(DataID.Done, "All done! Render complete.");
+                        Client.Write(new NetData().Write(NetData.DONE).Write("All done!"));
                     };
 
                     Renderer.StartRender();
@@ -165,17 +177,17 @@ namespace RimworldRendererMod.RemoteRenderer
                     break;
 
                 default:
-                    Console.WriteLine($"[ERROR] Unexpected data ID sent to client: {data.ID}.");
+                    Console.WriteLine($"[ERROR] Unexpected data ID sent to client: {ID}.");
                     break;
             }
         }
 
         private static void Shutdown()
         {
-            if(Connection != null)
+            if(Client != null)
             {
-                Connection.Dispose();
-                Connection = null;
+                Client.Shutdown();
+                Client = null;
             }
         }
 
@@ -200,7 +212,7 @@ namespace RimworldRendererMod.RemoteRenderer
 
         private static void SendUpdate()
         {
-            Connection.Write(DataID.Update, $"{currentStatus},{currentPercentage},{currentETA}");
+            Client.Write(new NetData().Write(NetData.UPDATE).Write($"{currentStatus},{currentPercentage},{currentETA}"));
         }
     }
 }

@@ -62,9 +62,9 @@
     <Folder Include="Harmony\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CommonV2\CommonV2.csproj">
-      <Project>{3472c90a-fbbd-4a0a-b4df-348517cc3b1c}</Project>
-      <Name>CommonV2</Name>
+    <ProjectReference Include="..\CommonV3\CommonV3.csproj">
+      <Project>{dad49c7e-e6fa-42d7-85b0-732c5a89f9b4}</Project>
+      <Name>CommonV3</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

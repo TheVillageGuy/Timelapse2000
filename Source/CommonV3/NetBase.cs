@@ -8,7 +8,7 @@ namespace RimworldRendererMod.CommonV3
         public abstract bool Connected { get; }
         public bool Running { get; protected set; }
         public Action UponConnected;
-        public Action<NetData> UponMessageIn;
+        public Action<NetData> UponMessage;
 
         protected internal IPAddress GetLocalAddress()
         {

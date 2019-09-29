@@ -49,7 +49,7 @@ namespace RimworldRendererMod.CommonV3
                     }
 
                     NetData inData = new NetData(inBuffer, count);
-                    UponMessageIn?.Invoke(inData);
+                    UponMessage?.Invoke(inData);
                 }                
             }
             catch(Exception e)

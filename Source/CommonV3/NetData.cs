@@ -8,7 +8,11 @@ namespace RimworldRendererMod.CommonV3
     public class NetData
     {
         public const byte UNKNOWN = 0;
-        public const byte END = 1;
+        public const byte START = 1;
+        public const byte READY = 2;
+        public const byte ERROR = 3;
+        public const byte UPDATE = 4;
+        public const byte DONE = 5;
 
         public int DataLength { get { return rawData.Count; } }
 

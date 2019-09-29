@@ -1,4 +1,4 @@
-﻿using RimworldRendererMod.Common;
+﻿using RimworldRendererMod.CommonV3;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -10,7 +10,7 @@ namespace RimworldRendererMod
     public static class Runner
     {
         public static bool IsRendering { get; private set; }
-        public static ServerConnection Connection;
+        public static NetServer Server;
 
         private static Thread thread;
 
@@ -30,7 +30,7 @@ namespace RimworldRendererMod
             string executable = Path.Combine(Path.Combine(RimworldRendererMod.BaseFolder, "Executables"), "RemoteRenderer.exe");
 
             Log.Message($"Running {executable}...");
-            UI_Dialog.Status = "Running {executable}...";
+            UI_Dialog.Status = $"Running {executable}...";
             var prc = Process.Start(executable, @"C:\Users\James\Pictures\ToRender C:\Users\James\Pictures\ToRender\Output.mp4 1920 1080 5000000 Default 10 5 HighQualityBicubic");
             return prc;
         }
@@ -42,27 +42,29 @@ namespace RimworldRendererMod
                 UI_Dialog.Status = "Launching renderer executable...";
                 RunRenderer();
 
-                UI_Dialog.Status = "Creating connection pipeline...";
-                Connection = new ServerConnection("Rimworld_Renderer_Mod_Pipeline");
-                Connection.UponMessage = (data) =>
+                UI_Dialog.Status = "Creating connection...";
+                Server = new NetServer();
+                Server.UponMessage = (data) =>
                 {
-                    switch (data.ID)
+                    byte ID = data.ReadByte();
+                    switch (ID)
                     {
-                        case DataID.Connected:
+                        case NetData.READY:
                             UI_Dialog.Status = "Established connection! Starting render...";
                             Log.Message("Established renderer connection, starting render...");
-                            Connection.Write(DataID.Start, "Go!");
+                            Server.Write(new NetData().Write(NetData.START).Write("Go!"));
                             break;
 
-                        case DataID.Error:
-                            UI_Dialog.Status = "Error! " + data.Info;
-                            Log.Message($"Renderer error: {data.Info}.");
-                            Connection.Dispose();
+                        case NetData.ERROR:
+                            string error = data.ReadString();
+                            UI_Dialog.Status = "Error! " + error;
+                            Log.Message($"Renderer error: {error}.");
+                            Server.Shutdown();
                             break;
 
-                        case DataID.Update:
-                            string[] split = data.Info.Split(',');
-                            if(split != null && split.Length == 3)
+                        case NetData.UPDATE:
+                            string[] split = data.ReadString().Split(',');
+                            if (split != null && split.Length == 3)
                             {
                                 UI_Dialog.Status = split[0];
                                 UI_Dialog.ProgressBarPercentage = float.Parse(split[1]);
@@ -70,35 +72,45 @@ namespace RimworldRendererMod
                             }
                             break;
 
-                        case DataID.Done:
-                            UI_Dialog.Status = "Done! " + data.Info.Trim();
+                        case NetData.DONE:
+                            UI_Dialog.Status = "Done! " + data.ReadString().Trim();
                             break;
 
                         default:
-                            Log.Message($"Unhandled data type from pipeline {data.ID}. Info: {data.Info}");
+                            Log.Message($"Unhandled data type from pipeline {ID}. Info: {data.ReadString() ?? "null"}");
                             break;
                     }
                 };
 
+                // Inner thread that runs the read loop.
                 UI_Dialog.Status = "Waiting to establish connection...";
-                Connection.StartRead();
+                Thread innerThread = new Thread(() =>
+                {
+                    Server.Run(7171);
+                });
+                innerThread.Name = "Renderer connection inner thread";
+                innerThread.Start();
 
+                Thread.Sleep(10);
+
+                // Timeout...
                 Stopwatch timeout = new Stopwatch();
                 timeout.Start();
-                while (Connection.IsReading && !Connection.IsConnected)
+                while (!Server.Connected)
                 {
                     Thread.Sleep(5);
                     if (timeout.Elapsed.TotalMilliseconds > 6000)
                     {
                         UI_Dialog.Status = "Renderer failed to connect. Are you running 64 bit windows?";
                         Log.Message("Client never connected to us. Timed out. Exiting...");
-                        Connection.Dispose();
+                        Server.Shutdown();
                         break;
                     }
                 }
                 timeout.Stop();
 
-                while (Connection.IsReading)
+                // Wait until connnection closes.
+                while (Server.Connected)
                 {
                     Thread.Sleep(5);
                 }
@@ -115,10 +127,10 @@ namespace RimworldRendererMod
                 UI_Dialog.ETA = "---";
                 UI_Dialog.ProgressBarPercentage = 0f;
                 IsRendering = false;
-                if(Connection != null)
+                if(Server != null)
                 {
-                    Connection.Dispose();
-                    Connection = null;
+                    Server.Shutdown();
+                    Server = null;
                     thread = null;
                 }
             }

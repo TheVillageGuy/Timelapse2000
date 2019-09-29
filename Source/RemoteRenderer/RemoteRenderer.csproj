@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{486C249F-6853-4D45-870B-476349FBE29B}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>RimworldRendererMod.RemoteRenderer</RootNamespace>
     <AssemblyName>RemoteRenderer</AssemblyName>
@@ -69,9 +69,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CommonV2\CommonV2.csproj">
-      <Project>{3472C90A-FBBD-4A0A-B4DF-348517CC3B1C}</Project>
-      <Name>CommonV2</Name>
+    <ProjectReference Include="..\CommonV3\CommonV3.csproj">
+      <Project>{dad49c7e-e6fa-42d7-85b0-732c5a89f9b4}</Project>
+      <Name>CommonV3</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
