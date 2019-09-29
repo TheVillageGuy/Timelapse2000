@@ -36,7 +36,19 @@ namespace RimworldRendererMod
             Widgets.Label(new Rect(0, y, area.width, 60f), new GUIContent("ModDisplayName".Translate(), MenuOption.Icon, "By Epicguru (James B)"));
             y += 60f;
 
-            Label($"Status: {Status}");
+            if (!RimworldRendererMod.Is64)
+            {
+                Text.Anchor = TextAnchor.UpperLeft;
+                Label($"<color=red>{"Error64Bit".Translate()}\n[Debug info]\nOperating system: {SystemInfo.operatingSystem}\nIntPtr size: {IntPtr.Size}</color>");
+                // Close button...
+                GUI.color = Color.white;
+                Rect rect4 = new Rect(area.width - 120, area.height - 35f, 120, 35f);
+                if (Widgets.ButtonText(rect4, "UI_Close".Translate(), true, false, true))
+                {
+                    Close();
+                }
+                return;
+            }
 
             if (Widgets.ButtonText(new Rect(0f, y, 250f, 40f), "Start"))
             {
@@ -44,9 +56,20 @@ namespace RimworldRendererMod
             }
             y += 50f;
 
-            Widgets.FillableBar(new Rect(0, y, area.width, 20f), ProgressBarPercentage);
-            y += 20f;
-            Widgets.Label(new Rect(0, y, area.width, 40f), $"Done: {ProgressBarPercentage * 100f:F0}%\nETA: {ETA}");
+            Label($"{SystemInfo.operatingSystem}");
+            Label($"{(IntPtr.Size != 8 ? "64 bit" : "32 bit")}");
+
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Label($"Status: {Status}");            
+
+            Widgets.FillableBarLabeled(new Rect(0, y, area.width, 30f), ProgressBarPercentage, 50, $"{ProgressBarPercentage * 100f:F0}%");
+            y += 30f;
+
+            if (Runner.IsRendering)
+            {
+                Label($"ETA: {ETA}");
+                Label($"<color=green>{"SafeContinueMessage".Translate()}</color>");
+            }
 
             // Close button...
             GUI.color = Color.white;

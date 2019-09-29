@@ -31,7 +31,9 @@ namespace RimworldRendererMod
 
             Log.Message($"Running {executable}...");
             UI_Dialog.Status = $"Running {executable}...";
-            var prc = Process.Start(executable, @"C:\Users\James\Pictures\ToRender C:\Users\James\Pictures\ToRender\Output.mp4 1920 1080 5000000 Default 10 5 HighQualityBicubic");
+            string source = @"E:\RimworldRenders\baseball cap";
+            string dest = @"E:\RimworldRenders\Mod Output.mp4";
+            var prc = Process.Start(executable, $"\"{source}\" \"{dest}\" 1920 1080 5000000 Default 10 5 HighQualityBicubic");
             return prc;
         }
 
@@ -74,6 +76,7 @@ namespace RimworldRendererMod
 
                         case NetData.DONE:
                             UI_Dialog.Status = "Done! " + data.ReadString().Trim();
+                            Server.Shutdown();
                             break;
 
                         default:

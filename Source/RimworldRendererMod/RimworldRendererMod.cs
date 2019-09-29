@@ -8,6 +8,13 @@ namespace RimworldRendererMod
 {
     public class RimworldRendererMod : Mod
     {
+        public static bool Is64
+        {
+            get
+            {
+                return System.IntPtr.Size == 8;
+            }
+        }
         public static string BaseFolder;
         public MyModSettings Settings;
 
