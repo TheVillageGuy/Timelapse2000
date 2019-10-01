@@ -120,9 +120,7 @@ namespace RimworldRendererMod.RemoteRenderer
             string error = CheckReady();
             if(error != null)
             {
-                Console.WriteLine($"Error, cannot render: {error}");
-                Client.Write(new NetData().Write(NetData.ERROR).Write(error));
-                Shutdown();
+                ErrorShutdown($"Error, cannot render: {error}");
                 return;
             }
             else
@@ -130,6 +128,13 @@ namespace RimworldRendererMod.RemoteRenderer
                 Client.Write(new NetData().Write(NetData.READY));
 
             }
+        }
+
+        public static void ErrorShutdown(string message)
+        {
+            Console.WriteLine(message);
+            Client.Write(new NetData().Write(NetData.ERROR).Write(message));
+            Shutdown();
         }
 
         private static string CheckReady()

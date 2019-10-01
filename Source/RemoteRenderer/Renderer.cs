@@ -43,65 +43,75 @@ namespace RimworldRendererMod.RemoteRenderer
 
         private void RunRender()
         {
-
-            Stopwatch watch = new Stopwatch();
-            using (var writer = new VideoFileWriter())
+            try
             {
-                writer.Open(OutputDir, Width, Height, FrameRate, Codec, Bitrate);
-
-                for (int i = 0; i < Images.Length; i++)
+                Stopwatch watch = new Stopwatch();
+                using (var writer = new VideoFileWriter())
                 {
-                    watch.Stop();
-                    watch.Reset();
-                    watch.Start();
+                    string toCreate = new FileInfo(OutputDir).Directory.FullName;
+                    if (!Directory.Exists(toCreate))
+                        Directory.CreateDirectory(toCreate);
 
-                    string path = Images[i];
-                    string name = new FileInfo(path).Name;
+                    writer.Open(OutputDir, Width, Height, FrameRate, Codec, Bitrate);
 
-                    Program.SetStatusSafe($"Loading {name}...");
-                    Bitmap bitmap = new Bitmap(new FileStream(path, FileMode.Open));
-
-                    Program.SetStatusSafe($"Resizing {name}...");
-                    Bitmap frame;
-                    if (bitmap.Width == Width && bitmap.Height == Height)
+                    for (int i = 0; i < Images.Length; i++)
                     {
-                        frame = bitmap;
+                        watch.Stop();
+                        watch.Reset();
+                        watch.Start();
+
+                        string path = Images[i];
+                        string name = new FileInfo(path).Name;
+
+                        Program.SetStatusSafe($"Loading {name}...");
+                        Bitmap bitmap = new Bitmap(new FileStream(path, FileMode.Open));
+
+                        Program.SetStatusSafe($"Resizing {name}...");
+                        Bitmap frame;
+                        if (bitmap.Width == Width && bitmap.Height == Height)
+                        {
+                            frame = bitmap;
+                        }
+                        else
+                        {
+                            frame = ResizeAndCenter(bitmap, out bool resized);
+                            if (resized)
+                                bitmap.Dispose();
+                        }
+
+                        for (int j = 0; j < FramesPerImage; j++)
+                        {
+                            Program.SetStatusSafe($"Writing {name}: Frame {j + 1} of {FramesPerImage}.");
+                            writer.WriteVideoFrame(frame);
+                        }
+
+                        frame.Dispose();
+
+                        Program.SetProgressSafe((float)(i + 1) / Images.Length);
+
+                        System.GC.Collect();
+
+                        watch.Stop();
+                        var elapsed = watch.Elapsed;
+                        int remaing = Images.Length - (i + 1);
+                        TimeSpan sum = TimeSpan.Zero;
+                        for (int j = 0; j < remaing; j++)
+                        {
+                            sum = sum.Add(elapsed);
+                        }
+
+                        Program.SetEstimatedTimeSafe(sum.ToString(@"hh\:mm\:ss"));
                     }
-                    else
-                    {
-                        frame = ResizeAndCenter(bitmap, out bool resized);
-                        if (resized)
-                            bitmap.Dispose();
-                    }
 
-                    for (int j = 0; j < FramesPerImage; j++)
-                    {
-                        Program.SetStatusSafe($"Writing {name}: Frame {j + 1} of {FramesPerImage}.");
-                        writer.WriteVideoFrame(frame);
-                    }
-
-                    frame.Dispose();
-
-                    Program.SetProgressSafe((float)(i + 1) / Images.Length);
-
-                    System.GC.Collect();
-
-                    watch.Stop();
-                    var elapsed = watch.Elapsed;
-                    int remaing = Images.Length - (i + 1);
-                    TimeSpan sum = TimeSpan.Zero;
-                    for (int j = 0; j < remaing; j++)
-                    {
-                        sum = sum.Add(elapsed);
-                    }
-
-                    Program.SetEstimatedTimeSafe(sum.ToString(@"hh\:mm\:ss"));
+                    writer.Close();
                 }
 
-                writer.Close();
+                Done?.Invoke();
             }
-
-            Done?.Invoke();
+            catch (Exception e)
+            {
+                Program.ErrorShutdown("Unhandled rendering algorithm exception: " + e.ToString());
+            }
         }
 
         private Bitmap ResizeAndCenter(Bitmap original, out bool didResize)

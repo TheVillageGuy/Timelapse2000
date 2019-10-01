@@ -25,16 +25,63 @@ namespace RimworldRendererMod
             thread.Start();
         }
 
-        private static Process RunRenderer()
+        private static Process RunRenderer(string source, string dest, int w, int h, int bitrate, VideoCodec codec, int imagesPerSecond, int framesPerImage, InterpolationMode interpolation)
         {
             string executable = Path.Combine(Path.Combine(RimworldRendererMod.BaseFolder, "Executables"), "RemoteRenderer.exe");
 
             Log.Message($"Running {executable}...");
             UI_Dialog.Status = $"Running {executable}...";
-            string source = @"E:\RimworldRenders\baseball cap";
-            string dest = @"E:\RimworldRenders\Mod Output.mp4";
-            var prc = Process.Start(executable, $"\"{source}\" \"{dest}\" 1920 1080 5000000 Default 10 5 HighQualityBicubic");
+            var prc = Process.Start(executable, $"\"{source}\" \"{dest}\" {w} {h} {bitrate} {codec} {imagesPerSecond} {framesPerImage} {interpolation}");
             return prc;
+        }
+
+        private static string GetDefaultOutputFolder()
+        {
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "RimWorld Renders");
+        }
+
+        private static string GetOutputVideoName(string sourceFolder, string extension)
+        {
+            string name = new DirectoryInfo(sourceFolder).Name;
+
+            int counter = 0;
+            while(true)
+            {
+                string output = Path.Combine(GetDefaultOutputFolder(), name + (counter == 0 ? "" : $" ({counter})") + extension);
+                counter++;
+
+                if (!File.Exists(output))
+                    return output;
+                if (counter == 10000)
+                {
+                    Log.Error($"Reached file {counter}, but all of these files exist!?! How many videos did you render, you animal?!?");
+                    return null;
+                }
+            }
+        }
+
+        private static int WorkOutFramesPerImage(int imagesPerSecond, out int newImagesPerSecond)
+        {
+            if (imagesPerSecond >= 10)
+            {
+                newImagesPerSecond = imagesPerSecond;
+                return 1;
+            }
+            // From now on, try to keep the framerate at 10 fps.
+            if(imagesPerSecond == 5)
+            {
+                newImagesPerSecond = 10;
+                return 2;
+            }
+            if (imagesPerSecond == 2)
+            {
+                newImagesPerSecond = 10;
+                return 5;
+            }
+
+            // Could't optimize without changing video length...
+            newImagesPerSecond = imagesPerSecond;
+            return 1;
         }
 
         private static void RunThread()
@@ -42,7 +89,24 @@ namespace RimworldRendererMod
             try
             {
                 UI_Dialog.Status = "Launching renderer executable...";
-                RunRenderer();
+                int imagesPerSecond;
+                int framesPerImage = WorkOutFramesPerImage(UI_Dialog.ImagesPerSecond, out imagesPerSecond);
+
+                if (framesPerImage * imagesPerSecond != UI_Dialog.ImagesPerSecond)
+                {
+                    float oldTime = UI_Dialog.ImagesPerSecond;
+                    float newTime = imagesPerSecond / framesPerImage;
+                    float ratio = newTime / oldTime;
+                    float change = ratio - 1f;
+
+                    string changeStr = $"{change * 100f:F0}%";
+                    string msg = $"Due to the low images per second ({UI_Dialog.ImagesPerSecond}), {framesPerImage} frames will be rendered per image, at a framerate of {imagesPerSecond} (the goal is at least 10fps). Due to this, the video file will be {changeStr} {(change >= 0f ? "longer" : "shorter")} than expected.";
+                    Log.Warning(msg);
+                }
+
+                Log.Message($"Running renderer:\nSource: {UI_Dialog.SourceFolder}\nOutput: {GetOutputVideoName(UI_Dialog.SourceFolder, ".mp4")}\nResolution: {UI_Dialog.ResX}x{UI_Dialog.ResY}\nBitrate: {UI_Dialog.Bitrate}\nCodec: {UI_Dialog.CurrentCodec}\nInterpolation: {UI_Dialog.CurrentInterpolationMode}\nFramerate: {imagesPerSecond} ({framesPerImage} frames per image for {(1f / imagesPerSecond) * framesPerImage:F2} seconds per image)");
+
+                RunRenderer(UI_Dialog.SourceFolder, GetOutputVideoName(UI_Dialog.SourceFolder, ".mp4"), UI_Dialog.ResX, UI_Dialog.ResY, UI_Dialog.Bitrate, UI_Dialog.CurrentCodec, imagesPerSecond, framesPerImage, UI_Dialog.CurrentInterpolationMode);
 
                 UI_Dialog.Status = "Creating connection...";
                 Server = new NetServer();

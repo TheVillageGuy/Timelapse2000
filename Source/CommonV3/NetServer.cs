@@ -94,7 +94,11 @@ namespace RimworldRendererMod.CommonV3
         public override void Shutdown()
         {
             base.Shutdown();
-            listener.Stop();
+            if(listener != null)
+            {
+                listener.Stop();
+                listener = null;
+            }
         }
     }
 }
