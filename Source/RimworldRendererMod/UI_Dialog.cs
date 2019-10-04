@@ -47,6 +47,11 @@ namespace RimworldRendererMod
         private static float bitsPerSecondRaw = 1000 * 1000 * 5;
         private static Vector2 scrollPos = Vector2.zero;
 
+        public static void UponRenderComplete()
+        {
+            confirmClose = true;
+        }
+
         private string PrettyBitrate(float bps)
         {
             if (bps < 1000)
@@ -101,15 +106,11 @@ namespace RimworldRendererMod
                 {
                     Label($"<color=green>Your video has been saved to {Runner.SavePath}!</color>");
                 }
-                Widgets.ButtonText(new Rect(0, y, 200, 30), "Confirm");
-
-                // Close button...
-                GUI.color = Color.white;
-                Rect rect4 = new Rect(area.width - 120, area.height - 35f, 120, 35f);
-                if (Widgets.ButtonText(rect4, "UI_Close".Translate(), true, false, true))
+                if(Widgets.ButtonText(new Rect(0, y, 200, 30), "Confirm"))
                 {
-                    Close();
+                    confirmClose = false;
                 }
+
                 Text.Anchor = TextAnchor.UpperLeft;
                 return;
             }

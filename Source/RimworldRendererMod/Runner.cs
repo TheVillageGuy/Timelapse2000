@@ -64,11 +64,6 @@ namespace RimworldRendererMod
             }
         }
 
-        private static void SetSavePath(string sourceDir)
-        {
-            SavePath = GetOutputVideoName(new DirectoryInfo(sourceDir).Name, RimworldRendererMod.Settings.FileExtension);
-        }
-
         private static int WorkOutFramesPerImage(int imagesPerSecond, out int newImagesPerSecond)
         {
             if (imagesPerSecond >= 10)
@@ -98,8 +93,7 @@ namespace RimworldRendererMod
             try
             {
                 UI_Dialog.Status = "Launching renderer executable...";
-                int imagesPerSecond;
-                int framesPerImage = WorkOutFramesPerImage(UI_Dialog.ImagesPerSecond, out imagesPerSecond);
+                int framesPerImage = WorkOutFramesPerImage(UI_Dialog.ImagesPerSecond, out int imagesPerSecond);
 
                 if (framesPerImage * imagesPerSecond != UI_Dialog.ImagesPerSecond)
                 {
@@ -113,10 +107,10 @@ namespace RimworldRendererMod
                     Log.Warning(msg);
                 }
 
-                Log.Message($"Running renderer:\nSource: {UI_Dialog.SourceFolder}\nOutput: {GetOutputVideoName(UI_Dialog.SourceFolder, ".mp4")}\nResolution: {UI_Dialog.ResX}x{UI_Dialog.ResY}\nBitrate: {UI_Dialog.Bitrate}\nCodec: {UI_Dialog.CurrentCodec}\nInterpolation: {UI_Dialog.CurrentInterpolationMode}\nFramerate: {imagesPerSecond} ({framesPerImage} frames per image for {(1f / imagesPerSecond) * framesPerImage:F2} seconds per image)");
+                SavePath = GetOutputVideoName(new FileInfo(UI_Dialog.SourceFolder).Name, ".mp4");
+                Log.Message($"Running renderer:\nSource: {UI_Dialog.SourceFolder}\nOutput: {SavePath}\nResolution: {UI_Dialog.ResX}x{UI_Dialog.ResY}\nBitrate: {UI_Dialog.Bitrate}\nCodec: {UI_Dialog.CurrentCodec}\nInterpolation: {UI_Dialog.CurrentInterpolationMode}\nFramerate: {imagesPerSecond} ({framesPerImage} frames per image for {(1f / imagesPerSecond) * framesPerImage:F2} seconds per image)");
 
-                RunRenderer(UI_Dialog.SourceFolder, GetOutputVideoName(UI_Dialog.SourceFolder, ".mp4"), UI_Dialog.ResX, UI_Dialog.ResY, UI_Dialog.Bitrate, UI_Dialog.CurrentCodec, imagesPerSecond, framesPerImage, UI_Dialog.CurrentInterpolationMode);
-
+                RunRenderer(UI_Dialog.SourceFolder, SavePath, UI_Dialog.ResX, UI_Dialog.ResY, UI_Dialog.Bitrate, UI_Dialog.CurrentCodec, imagesPerSecond, framesPerImage, UI_Dialog.CurrentInterpolationMode);
                 UI_Dialog.Status = "Creating connection...";
                 Server = new NetServer();
                 Server.UponMessage = (data) =>
@@ -149,6 +143,7 @@ namespace RimworldRendererMod
 
                         case NetData.DONE:
                             UI_Dialog.Status = "Done! " + data.ReadString().Trim();
+                            UI_Dialog.UponRenderComplete();
                             Server.Shutdown();
                             break;
 
