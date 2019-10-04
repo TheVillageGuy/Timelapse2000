@@ -11,6 +11,7 @@ namespace RimworldRendererMod
     {
         public static bool IsRendering { get; private set; }
         public static NetServer Server;
+        public static string SavePath { get; private set; }
 
         private static Thread thread;
 
@@ -40,14 +41,17 @@ namespace RimworldRendererMod
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "RimWorld Renders");
         }
 
-        private static string GetOutputVideoName(string sourceFolder, string extension)
+        private static string GetOutputVideoName(string name, string extension)
         {
-            string name = new DirectoryInfo(sourceFolder).Name;
+            // name = "large";
+            // extension = ".mp4";
+
+            string basePath = RimworldRendererMod.Settings.DefaultSaveLocation;
 
             int counter = 0;
             while(true)
             {
-                string output = Path.Combine(GetDefaultOutputFolder(), name + (counter == 0 ? "" : $" ({counter})") + extension);
+                string output = Path.Combine(basePath, name + (counter == 0 ? "" : $" ({counter})") + extension);
                 counter++;
 
                 if (!File.Exists(output))
@@ -58,6 +62,11 @@ namespace RimworldRendererMod
                     return null;
                 }
             }
+        }
+
+        private static void SetSavePath(string sourceDir)
+        {
+            SavePath = GetOutputVideoName(new DirectoryInfo(sourceDir).Name, RimworldRendererMod.Settings.FileExtension);
         }
 
         private static int WorkOutFramesPerImage(int imagesPerSecond, out int newImagesPerSecond)

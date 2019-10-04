@@ -20,6 +20,7 @@ namespace RimworldRendererMod
             }
         }
         public static string SourceFolder;
+        private static bool confirmClose = false;
 
         public UI_Dialog()
         {
@@ -93,6 +94,25 @@ namespace RimworldRendererMod
 
             Text.Anchor = TextAnchor.MiddleLeft;
             Label($"Status: {(Status.Length > 120 ? Status.Substring(0, 120) + "..." : Status)}");
+
+            if (confirmClose)
+            {
+                if (!Status.StartsWith("Error"))
+                {
+                    Label($"<color=green>Your video has been saved to {Runner.SavePath}!</color>");
+                }
+                Widgets.ButtonText(new Rect(0, y, 200, 30), "Confirm");
+
+                // Close button...
+                GUI.color = Color.white;
+                Rect rect4 = new Rect(area.width - 120, area.height - 35f, 120, 35f);
+                if (Widgets.ButtonText(rect4, "UI_Close".Translate(), true, false, true))
+                {
+                    Close();
+                }
+                Text.Anchor = TextAnchor.UpperLeft;
+                return;
+            }
 
             Widgets.FillableBarLabeled(new Rect(0, y, area.width, 30f), ProgressBarPercentage, 50, $"{ProgressBarPercentage * 100f:F0}%");
             y += 40f;
@@ -173,7 +193,6 @@ namespace RimworldRendererMod
             {
                 Close();
             }
-
             Text.Anchor = TextAnchor.UpperLeft;
 
             void Label(string s)

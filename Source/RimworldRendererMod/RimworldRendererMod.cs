@@ -38,6 +38,8 @@ namespace RimworldRendererMod
             Listing_Standard listing = new Listing_Standard();
             listing.Begin(inRect);
             Settings.DefaultBaseImagesPath = listing.TextEntryLabeled("UI_ImagePathDir", Settings.DefaultBaseImagesPath, 1);
+            Settings.DefaultSaveLocation = listing.TextEntryLabeled("UI_DefaultSaveDir", Settings.DefaultSaveLocation, 1);
+            Settings.FileExtension = listing.TextEntryLabeled("UI_FileExtension", Settings.FileExtension, 1);
             listing.End();
 
             base.DoSettingsWindowContents(inRect);
