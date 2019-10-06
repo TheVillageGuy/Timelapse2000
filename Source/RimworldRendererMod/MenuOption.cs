@@ -21,9 +21,10 @@ namespace RimworldRendererMod
 
             optList.Add(new ListableOption_WebLink("MainMenuOptionLabel".Translate(), delegate () {
                 Find.WindowStack.Add(new UI_Dialog());
-            }, Icon));
+            }, IconMain));
         }
 
         public static readonly Texture2D Icon = ContentFinder<Texture2D>.Get("Icon", true);
+        public static readonly Texture2D IconMain = ContentFinder<Texture2D>.Get("Icon Main", true);
     }
 }

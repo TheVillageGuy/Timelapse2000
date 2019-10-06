@@ -74,8 +74,12 @@ namespace RimworldRendererMod
 
             Text.Anchor = TextAnchor.UpperCenter;
             Text.Font = GameFont.Medium;
-            Widgets.Label(new Rect(0, y, area.width, 60f), new GUIContent("ModDisplayName".Translate(), MenuOption.Icon, "By Epicguru (James B)"));
-            y += 60f;
+            Widgets.Label(new Rect(0, y, area.width, 40f), new GUIContent(" " + "ModDisplayName".Translate(), MenuOption.Icon));
+            y += 36f;
+            Text.Font = GameFont.Small;
+            Widgets.Label(new Rect(0, y, area.width, 30f), "by Blyatman (Epicguru)");
+            y += 40f;
+            Text.Font = GameFont.Medium;
 
             if (!RimworldRendererMod.Is64)
             {
