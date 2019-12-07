@@ -6,6 +6,12 @@
     <li>1.0</li>
   </supportedVersions>
   <description>
-  Creates a video file from all the images created by the Progress Renderer mod! You want a timelapse? You got one!
+  Creates a video file from all the images created by the Progress Renderer mod (or even just screenshots)!
+  You want a timelapse? You got one
+  
+  [IMPORTANT] This only works on Windows x64! Don't try to run this on Mac/Linux, it won't work!
+  
+  This is a WIP mod. The interface is not very pretty, and I will update it when I get time.
+  For help and more info on the mod, find it on Github and read the instructions.
   </description>
 </ModMetaData>

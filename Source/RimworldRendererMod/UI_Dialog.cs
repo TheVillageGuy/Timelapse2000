@@ -46,6 +46,7 @@ namespace RimworldRendererMod
         public static int Bitrate { get { return (int)Math.Ceiling(bitsPerSecondRaw); } }
         private static float bitsPerSecondRaw = 1000 * 1000 * 5;
         private static Vector2 scrollPos = Vector2.zero;
+        private static bool inHelp = false;
 
         public static void UponRenderComplete()
         {
@@ -95,10 +96,31 @@ namespace RimworldRendererMod
                 return;
             }
 
+            if (inHelp)
+            {
+                DrawHelpMenu(area, ref y);
+
+                GUI.color = Color.white;
+                Rect rect4 = new Rect(area.width - 120, area.height - 35f, 120, 35f);
+                if (Widgets.ButtonText(rect4, "UI_Back".Translate(), true, false, true))
+                {
+                    inHelp = false;
+                }
+                Text.Anchor = TextAnchor.UpperLeft;
+
+                return;
+            }
+
             if (Widgets.ButtonText(new Rect(0f, y, 250f, 40f), "Start"))
             {
                 Runner.StartRender();
             }
+            GUI.color = Color.green;
+            if(Widgets.ButtonText(new Rect(area.width - 100f, y + 2.5f, 100f, 35f), "Help"))
+            {
+                inHelp = true;
+            }
+            GUI.color = Color.white;
             y += 50f;
 
             Text.Anchor = TextAnchor.MiddleLeft;
@@ -202,6 +224,36 @@ namespace RimworldRendererMod
 
             void Label(string s)
             {
+                float h = Text.CalcHeight(s, area.width);
+                Widgets.Label(new Rect(0, y, area.width, h), s);
+                y += h + 5f;
+            }
+        }
+
+        private void DrawHelpMenu(Rect area, ref float yThing)
+        {
+            float y = yThing;
+
+            Text.Anchor = TextAnchor.UpperLeft;
+
+            Label("Help!", true);
+            y += 15f;
+            Label("How to create a timelapse", true);
+            Label("1.", true);
+            Label("Locate the folder that contains the Rimworld images.\nIf you are using the Progress Renderer, then you " +
+                "should check the mod settings to see where the images are being saved.\nCopy the full path of the folder that contains the images.");
+            Label("2.", true);
+            Label("Paste the folder path here:");
+            Label("3.", true);
+            Label("Press the Start button and wait for the video to be created!");
+
+            yThing = y;
+            void Label(string s, bool large = false)
+            {
+                if (large)
+                    Text.Font = GameFont.Medium;
+                else
+                    Text.Font = GameFont.Small;
                 float h = Text.CalcHeight(s, area.width);
                 Widgets.Label(new Rect(0, y, area.width, h), s);
                 y += h + 5f;

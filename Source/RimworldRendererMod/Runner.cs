@@ -47,6 +47,17 @@ namespace RimworldRendererMod
             // extension = ".mp4";
 
             string basePath = RimworldRendererMod.Settings.DefaultSaveLocation;
+            extension = extension.Trim();
+            if (string.IsNullOrEmpty(extension))
+            {
+                Log.Warning("Null extension, using .mp4");
+                extension = ".mp4";
+            }
+            if (!extension.StartsWith("."))
+            {
+                extension = "." + extension;
+                Log.Warning("Extension does not start with '.', changed to " + extension);
+            }
 
             int counter = 0;
             while(true)

@@ -5,4 +5,7 @@
   <UI_Close>Close</UI_Close>
   <Error64Bit>Uh oh! Looks like you are not on a 64 bit system! Rimworld Renderer requires a 64 bit system to run.</Error64Bit>
   <SafeContinueMessage>You can safely leave this menu and continue playing Rimworld, but don't close the game until the render has finished!</SafeContinueMessage>
-</LanguageData>
+  <UI_ImagePathDir>Default images location:</UI_ImagePathDir>
+  <UI_DefaultSaveDir>Video save location:</UI_DefaultSaveDir>
+  <UI_FileExtension>Video file extension:</UI_FileExtension>
+ </LanguageData>
