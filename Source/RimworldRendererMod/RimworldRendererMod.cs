@@ -21,11 +21,25 @@ namespace RimworldRendererMod
         public RimworldRendererMod(ModContentPack content) : base(content)
         {
             Settings = GetSettings<MyModSettings>();
+            bool progressRendererInstalled = ModLister.HasActiveModWithName("Progress Renderer");
+            if (progressRendererInstalled)
+            {
+                ModMetaData meta = null;
+                foreach (var mod in ModLister.AllInstalledMods)
+                {
+                    if(mod.Name == "Progress Renderer")
+                    {
+                        meta = mod;
+                        break;
+                    }
+                }
+                Log.Message($"Detected progress renderer mod! ({meta?.Identifier ?? "???"})");
+            }
 
-            var harmony = HarmonyInstance.Create("com.github.Epicguru.RimworldRendererMod");
+            var harmony = HarmonyInstance.Create("com.github.Epicguru.Timelapse2000");
             harmony.PatchAll();
 
-            Log.Message("Patched in RimworldRenderer. Option should now be in main menu.");
+            Log.Message("Patched in Timelapse 2000. Option should now be in main menu.");
 
             BaseFolder = new DirectoryInfo(base.Content.AssembliesFolder).Parent.FullName;
 

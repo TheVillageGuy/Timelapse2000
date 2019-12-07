@@ -1,11 +1,27 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
-  <ModDisplayName>Rimworld Renderer</ModDisplayName>
-  <MainMenuOptionLabel>Rimworld Renderer</MainMenuOptionLabel>
+  <ModDisplayName>Timelapse 2000</ModDisplayName>
+  <MainMenuOptionLabel>Timelapse 2000</MainMenuOptionLabel>
   <UI_Close>Close</UI_Close>
-  <Error64Bit>Uh oh! Looks like you are not on a 64 bit system! Rimworld Renderer requires a 64 bit system to run.</Error64Bit>
-  <SafeContinueMessage>You can safely leave this menu and continue playing Rimworld, but don't close the game until the render has finished!</SafeContinueMessage>
+  <UI_Error64Bit>Uh oh! Looks like you are not on a 64 bit system! Timelapse 2000 requires a 64 bit system to run.</UI_Error64Bit>
+  <UI_SafeContinueMessage>You can safely leave this menu and continue playing Rimworld, but don't close the game until the render has finished!</UI_SafeContinueMessage>
   <UI_ImagePathDir>Default images location:</UI_ImagePathDir>
   <UI_DefaultSaveDir>Video save location:</UI_DefaultSaveDir>
   <UI_FileExtension>Video file extension:</UI_FileExtension>
+  <UI_Back>Back</UI_Back>
+  <UI_Start>Start</UI_Start>
+  <UI_Sampling>Image sampling</UI_Sampling>
+  <UI_VideoCodec>Video codec</UI_VideoCodec>
+  <UI_ImagesPerSecond>Images per second</UI_ImagesPerSecond>
+  <UI_Bitrate>Bitrate</UI_Bitrate>
+  <UI_ImagesFolder>Images Folder</UI_ImagesFolder>
+  <UI_Help>Help</UI_Help>
+  <UI_Resolution>Resolution</UI_Resolution>
+  <UI_FolderNotFound>Folder not found</UI_FolderNotFound>
+  <UI_Pixels>pixels</UI_Pixels>
+  <UI_NoImgInFolder>No images in folder</UI_NoImgInFolder>
+  <UI_PerhapsYouMeant>Perhaps you meant:</UI_PerhapsYouMeant>
+  <UI_Good>Good</UI_Good>
+  <UI_SaveConfirmation>Your video has been saved to {0}!</UI_SaveConfirmation>
+  <UI_Confirm>Confirm</UI_Confirm>
  </LanguageData>

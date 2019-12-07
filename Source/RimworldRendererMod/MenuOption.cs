@@ -24,7 +24,9 @@ namespace RimworldRendererMod
             }, IconMain));
         }
 
-        public static readonly Texture2D Icon = ContentFinder<Texture2D>.Get("Icon", true);
-        public static readonly Texture2D IconMain = ContentFinder<Texture2D>.Get("Icon Main", true);
+        public static readonly Texture2D Icon = ContentFinder<Texture2D>.Get("Icon");
+        public static readonly Texture2D IconMain = ContentFinder<Texture2D>.Get("Icon Main");
+        public static readonly Texture2D PRInfo = ContentFinder<Texture2D>.Get("PRInfo");
+        public static readonly Texture2D ImagesFolderInfo = ContentFinder<Texture2D>.Get("ImagesFolderInfo");
     }
 }

@@ -38,7 +38,7 @@ namespace RimworldRendererMod
 
         public static int ResX = 1920, ResY = 1080;
         public static int ImagesPerSecond = 10;
-        private static string IPSS = "10";
+        private static string IPSS = "10"; // Images per second string.
         private static string ResXS = "1920", ResYS = "1080";
 
         public static InterpolationMode CurrentInterpolationMode = InterpolationMode.HighQualityBicubic;
@@ -46,7 +46,9 @@ namespace RimworldRendererMod
         public static int Bitrate { get { return (int)Math.Ceiling(bitsPerSecondRaw); } }
         private static float bitsPerSecondRaw = 1000 * 1000 * 5;
         private static Vector2 scrollPos = Vector2.zero;
+        private static Vector2 scrollPos2 = Vector2.zero;
         private static bool inHelp = false;
+        private static int LastHeight;
 
         public static void UponRenderComplete()
         {
@@ -78,14 +80,14 @@ namespace RimworldRendererMod
             Widgets.Label(new Rect(0, y, area.width, 40f), new GUIContent(" " + "ModDisplayName".Translate(), MenuOption.Icon));
             y += 36f;
             Text.Font = GameFont.Small;
-            Widgets.Label(new Rect(0, y, area.width, 30f), "by Blyatman (Epicguru)");
+            Widgets.Label(new Rect(0, y, area.width, 30f), "by Epicguru (James B)");
             y += 40f;
             Text.Font = GameFont.Medium;
 
             if (!RimworldRendererMod.Is64)
             {
                 Text.Anchor = TextAnchor.UpperLeft;
-                Label($"<color=red>{"Error64Bit".Translate()}\n[Debug info]\nOperating system: {SystemInfo.operatingSystem}\nIntPtr size: {IntPtr.Size}</color>");
+                Label($"<color=red>{"UI_Error64Bit".Translate()}\n[Debug info]\nOperating system: {SystemInfo.operatingSystem}\nIntPtr size: {IntPtr.Size}</color>");
                 // Close button...
                 GUI.color = Color.white;
                 Rect rect4 = new Rect(area.width - 120, area.height - 35f, 120, 35f);
@@ -111,12 +113,12 @@ namespace RimworldRendererMod
                 return;
             }
 
-            if (Widgets.ButtonText(new Rect(0f, y, 250f, 40f), "Start"))
+            if (!confirmClose && Widgets.ButtonText(new Rect(0f, y, 250f, 40f), "UI_Start".Translate()))
             {
                 Runner.StartRender();
             }
             GUI.color = Color.green;
-            if(Widgets.ButtonText(new Rect(area.width - 100f, y + 2.5f, 100f, 35f), "Help"))
+            if(!confirmClose && Widgets.ButtonText(new Rect(area.width - 100f, y + 2.5f, 100f, 35f), "UI_Help".Translate()))
             {
                 inHelp = true;
             }
@@ -130,9 +132,9 @@ namespace RimworldRendererMod
             {
                 if (!Status.StartsWith("Error"))
                 {
-                    Label($"<color=green>Your video has been saved to {Runner.SavePath}!</color>");
+                    Label($"<color=green>{"UI_SaveConfirmation".Translate(Runner.SavePath)}</color>");
                 }
-                if(Widgets.ButtonText(new Rect(0, y, 200, 30), "Confirm"))
+                if(Widgets.ButtonText(new Rect(0, y, 200, 30), "UI_Confirm".Translate()))
                 {
                     confirmClose = false;
                 }
@@ -147,42 +149,80 @@ namespace RimworldRendererMod
             if (Runner.IsRendering)
             {
                 Label($"ETA: {ETA}");
-                Label($"<color=green>{"SafeContinueMessage".Translate()}</color>");
+                Label($"<color=green>{"UI_SafeContinueMessage".Translate()}</color>");
             }
             else
             {
                 y += inputsPreSapce;
-                Widgets.BeginScrollView(new Rect(0, y, area.width, area.height - y - 40), ref scrollPos, new Rect(0, y, 100, 500));
+                Widgets.BeginScrollView(new Rect(0, y, area.width, area.height - y - 40), ref scrollPos, new Rect(0, y, 100, LastHeight));
                 y += inputsPreSapce * 0.5f;
 
-                string s = "Images folder: ";
+                string s = $"{"UI_ImagesFolder".Translate()}:";
                 float w = Text.CalcSize(s).x;
                 Widgets.Label(new Rect(0, y, w, 30), s);
-                string dirString = Directory.Exists(SourceFolder) ? "<color=green>Good</color>" : "<color=red>Folder not found</color>";
+                bool dirExists = Directory.Exists(SourceFolder);
+                bool dirContainsImages = false;
+                List<string> suggestions = null;
+                if (dirExists)
+                {
+                    dirContainsImages = ContainsImages(SourceFolder);
+                    
+                    if (!dirContainsImages)
+                    {
+                        try
+                        {
+                            suggestions = new List<string>();
+                            foreach (var dir in Directory.GetDirectories(SourceFolder))
+                            {
+                                if(ContainsImages(dir))
+                                    suggestions.Add(new DirectoryInfo(dir).Name);
+                            }
+                        }
+                        catch { }                        
+                    }
+                }
+                string dirString = dirExists ? (dirContainsImages ? $"<color=green>{"UI_Good".Translate()}</color>" : $"<color=yellow>{"UI_NoImgInFolder".Translate()}</color>") : $"<color=red>{"UI_FolderNotFound".Translate()}</color>";                
                 float width = Text.CalcSize(dirString).x + 5;
-                SourceFolder = Widgets.TextField(new Rect(w + 5, y, area.width - width - 30 - w, textInputHeights), SourceFolder);
+                SourceFolder = Widgets.TextField(new Rect(w + 5, y, area.width - width - 30 - w, textInputHeights), SourceFolder);                
+
+                // Folder path status.
                 Text.Font = GameFont.Medium;
                 Widgets.Label(new Rect(area.width - width - 20, y, width + 30, textInputHeights), dirString);
                 Text.Font = GameFont.Medium;
                 y += textInputHeights + 15;
 
-                s = "Resolution: ";
+                // Suggestions for folders.
+                if (dirExists && !dirContainsImages && suggestions != null && suggestions.Count > 0)
+                {
+                    Widgets.Label(new Rect(0, y, width + 30, 32), $"<color=yellow>{"UI_PerhapsYouMeant".Translate()}:</color>");
+                    y += 32 + 5;
+                    foreach (var dir in suggestions)
+                    {
+                        if(Widgets.ButtonText(new Rect(0, y, width + 30, 32), $"...{dir}"))
+                        {
+                            SourceFolder = Path.Combine(SourceFolder, dir);
+                        }
+                        y += 35;
+                    }
+                }
+
+                s = $"{"UI_Resolution".Translate()}:";
                 w = Text.CalcSize(s).x;
                 Widgets.Label(new Rect(0, y, w, 30), s);
                 Widgets.TextFieldNumeric(new Rect(w + 5, y, resolutionInputWidths, 30), ref ResX, ref ResXS, 1, 9999);
                 Widgets.Label(new Rect(w + resolutionInputWidths + 10, y, 20, 32), "x");
                 Widgets.TextFieldNumeric(new Rect(w + resolutionInputWidths + 25, y, resolutionInputWidths, 30), ref ResY, ref ResYS, 1, 9999);
-                Widgets.Label(new Rect(w + resolutionInputWidths * 2 + 30, y, 120, 32), "pixels.");
+                Widgets.Label(new Rect(w + resolutionInputWidths * 2 + 30, y, 120, 32), $"{"UI_Pixels".Translate()}:");
                 y += 40;
 
-                s = "Bitrate: ";
+                s = $"{"UI_Bitrate".Translate()}:";
                 w = Text.CalcSize(s).x;
                 Widgets.Label(new Rect(0, y, w, 30), s);
                 bitsPerSecondRaw = Widgets.HorizontalSlider(new Rect(w + 5, y + 12, area.width - 120 - w, 30), bitsPerSecondRaw, 1000, 1000 * 1000 * 40);
                 Widgets.Label(new Rect(area.width - 110, y, 120, 30), PrettyBitrate(bitsPerSecondRaw).ToString());
                 y += 40;
 
-                s = "Images per second: ";
+                s = $"{"UI_ImagesPerSecond".Translate()}:";
                 w = Text.CalcSize(s).x;
                 Widgets.Label(new Rect(0, y, w, 30), s);
                 Widgets.IntEntry(new Rect(w, y, 200, 30), ref ImagesPerSecond, ref IPSS);
@@ -198,13 +238,13 @@ namespace RimworldRendererMod
                 }
                 y += 40f;
 
-                s = "Frame sampling: ";
+                s = $"{"UI_Sampling".Translate()}:";
                 w = Text.CalcSize(s).x;
                 Widgets.Label(new Rect(0, y, w, 30), s);
                 Widgets.Dropdown(new Rect(w, y, 250, 30), InterpolationMode.HighQualityBicubic, (enumThing) => { return enumThing.ToString(); }, (thing) => this.DropdownGenerator(thing), CurrentInterpolationMode.ToString());
                 y += 40f;
 
-                s = "Video codec: ";
+                s = $"{"UI_VideoCodec".Translate()}:";
                 w = Text.CalcSize(s).x;
                 Widgets.Label(new Rect(0, y, w, 30), new GUIContent(s, "The codec to use in the ouput video. Only change if you know what you are doing."));
                 Widgets.Dropdown(new Rect(w, y, 250, 30), VideoCodec.Default, (enumThing) => { return enumThing.ToString(); }, (thing) => this.DropdownGenerator2(thing), CurrentCodec.ToString());
@@ -222,11 +262,33 @@ namespace RimworldRendererMod
             }
             Text.Anchor = TextAnchor.UpperLeft;
 
+            LastHeight = (int)y + 10;
+
             void Label(string s)
             {
                 float h = Text.CalcHeight(s, area.width);
                 Widgets.Label(new Rect(0, y, area.width, h), s);
                 y += h + 5f;
+            }
+
+            bool ContainsImages(string dir)
+            {
+                try
+                {
+                    foreach (var path in Directory.GetFiles(dir))
+                    {
+                        var info = new FileInfo(path);
+                        if (info.Extension == ".png" || info.Extension == ".jpg")
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+                catch
+                {
+                    return false;
+                }
             }
         }
 
@@ -236,16 +298,25 @@ namespace RimworldRendererMod
 
             Text.Anchor = TextAnchor.UpperLeft;
 
+            Widgets.BeginScrollView(new Rect(0, y, area.width, area.height - y - 40), ref scrollPos2, new Rect(0, y, 100, 970));
             Label("Help!", true);
             y += 15f;
-            Label("How to create a timelapse", true);
+            Label("How to create a timelapse:", true);
             Label("1.", true);
-            Label("Locate the folder that contains the Rimworld images.\nIf you are using the Progress Renderer, then you " +
-                "should check the mod settings to see where the images are being saved.\nCopy the full path of the folder that contains the images.");
+            Label("Locate the folder that contains the images.\nIf you are using the Progress Renderer mod, then you " +
+                "should check the mod settings to see where the images are being saved:");
+            Widgets.DrawTextureFitted(new Rect(0, y, 664, 515), MenuOption.PRInfo, 1f);
+            y += 520;
+            Label("Copy the full path to the images folder, Such as \"E:\\RimworldRenders\\MyWorld\"");
             Label("2.", true);
-            Label("Paste the folder path here:");
+            Label("Paste the folder path into this field in the other menu:");
+            Widgets.DrawTextureFitted(new Rect(0, y, 443, 37), MenuOption.ImagesFolderInfo, 1f);
+            y += 45;
+
             Label("3.", true);
             Label("Press the Start button and wait for the video to be created!");
+
+            Widgets.EndScrollView();
 
             yThing = y;
             void Label(string s, bool large = false)
