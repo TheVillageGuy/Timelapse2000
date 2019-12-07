@@ -1,6 +1,8 @@
-# Rimworld Renderer Mod
+# Timelapse 2000 Mod
 Here is the source code for my Timelapse 2000 Mod, which is used to create timelapse videos from a sequence of images.
-Integrates seamlessly into the Rimworld game. See 
+Integrates seamlessly into the Rimworld game.
+
+Within the code, the mod is called Rimworld Renderer. This name has been changed in all text because it is confusing.
 
 ## Settings Help
 #### Resolution
