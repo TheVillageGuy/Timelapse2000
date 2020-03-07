@@ -113,7 +113,7 @@ namespace RimworldRendererMod
                 return;
             }
 
-            if (!confirmClose && Widgets.ButtonText(new Rect(0f, y, 250f, 40f), "UI_Start".Translate()))
+            if (!confirmClose && !Runner.IsRendering && Widgets.ButtonText(new Rect(0f, y, 250f, 40f), "UI_Start".Translate()))
             {
                 Runner.StartRender();
             }
@@ -178,7 +178,10 @@ namespace RimworldRendererMod
                                     suggestions.Add(new DirectoryInfo(dir).Name);
                             }
                         }
-                        catch { }                        
+                        catch
+                        {
+                            // ignored
+                        }
                     }
                 }
                 string dirString = dirExists ? (dirContainsImages ? $"<color=green>{"UI_Good".Translate()}</color>" : $"<color=yellow>{"UI_NoImgInFolder".Translate()}</color>") : $"<color=red>{"UI_FolderNotFound".Translate()}</color>";                
@@ -278,7 +281,7 @@ namespace RimworldRendererMod
                     foreach (var path in Directory.GetFiles(dir))
                     {
                         var info = new FileInfo(path);
-                        if (info.Extension == ".png" || info.Extension == ".jpg")
+                        if (info.Extension.ToLower() == ".png" || info.Extension.ToLower() == ".jpg")
                         {
                             return true;
                         }
