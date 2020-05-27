@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Excluded>
+    <exclude>D:\Steam Games\steamapps\common\RimWorld\Mods\Timelapse2000\.git</exclude>
+    <exclude>D:\Steam Games\steamapps\common\RimWorld\Mods\Timelapse2000\Assemblies\CommonV3.pdb</exclude>
+    <exclude>D:\Steam Games\steamapps\common\RimWorld\Mods\Timelapse2000\Executables\Accord.dll.config</exclude>
+    <exclude>D:\Steam Games\steamapps\common\RimWorld\Mods\Timelapse2000\Executables\Accord.Video.FFMPEG.x64.xml</exclude>
+    <exclude>D:\Steam Games\steamapps\common\RimWorld\Mods\Timelapse2000\Executables\Accord.Video.xml</exclude>
+    <exclude>D:\Steam Games\steamapps\common\RimWorld\Mods\Timelapse2000\Executables\Accord.xml</exclude>
+    <exclude>D:\Steam Games\steamapps\common\RimWorld\Mods\Timelapse2000\Executables\RemoteRenderer.exe.config</exclude>
+    <exclude>D:\Steam Games\steamapps\common\RimWorld\Mods\Timelapse2000\Source</exclude>
+    <exclude>D:\Steam Games\steamapps\common\RimWorld\Mods\Timelapse2000\Textures\Icon.pdn</exclude>
+    <exclude>D:\Steam Games\steamapps\common\RimWorld\Mods\Timelapse2000\Textures\Splash.pdn</exclude>
+  </Excluded>
+</Configuration>
