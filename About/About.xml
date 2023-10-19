@@ -1,23 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
-  <packageId>co.uk.epicguru.timelapse2000</packageId>
-  <name>Timelapse 2000</name>
-  <author>Epicguru (James B)</author>
-  <url>https://github.com/Epicguru/RimworldRendererMod</url>
+  <packageId>TVG.timelapse2023</packageId>
+  <name>Timelapse 2023</name>
+  <author>The Village Guy</author>
+  <url>https://rimworld.gallery/m/rimworld@lemmy.world/t/401/Steam-Workshop-Timelapse-2023</url>
   <supportedVersions>
     <li>1.1</li>
     <li>1.2</li>
+	<li>1.3</li>
+	<li>1.4</li>
   </supportedVersions>
   <description>
-&lt;size=24&gt;You want a timelapse? You got one!&lt;/size&gt;
-Creates a video file from all the images created by the Progress Renderer mod (or even just screenshots)!
- 
-&lt;b&gt;[IMPORTANT] This only works on Windows x64! Don't try to run this on Mac/Linux, it won't work!&lt;/b&gt;
+&lt;size=24&gt;Create timelapses from PR renders&lt;/size&gt;
+&lt;b&gt;[IMPORTANT] This mod requires Windows x64! Other operating systems are not supported&lt;/b&gt;
+
+Using the &lt;b&gt;progress renderer mod&lt;/b&gt; you can make renders.
+Tell Timelapse 2023 where they are, set your output quality
+and it will make a timelapse for you.
 
 Default output folder: My Documents/Rimworld Renders/
 
-This is a WIP mod. The interface is not very pretty, and I will update it when I get time.
-For help and more info on the mod, find it on Github and read the instructions.
+This mod (2000) was originally made by Epicguru (James B)
+
+It is much appreciated in the
+https://rimworld.gallery community.
+
+Sadly, he announced abandoning it in 2020:
+
+"As of May 2022, I will no longer be updating my Rimworld mods
+until further notice, although if a new version of Rimworld
+is released, I may make an effort to port my mods."
+
+As people are asking for it to be updated and we are
+now two Rimworld versions ahead, I (TVG) am now (Oct 2023)
+taking over the maintenance of this mod.
+I will not be improving it, just making it work on all Rimworld versions.
+
+Epicguru, thanks for this mod!
   </description>
   <modDependencies>
     <li>

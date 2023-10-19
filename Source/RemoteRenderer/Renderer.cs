@@ -15,7 +15,7 @@ namespace RimworldRendererMod.RemoteRenderer
 
         public int FrameRate = 24;
         public int FramesPerImage = 24 / 4;
-        public int Width = 1920, Height = 1080;
+        public int Width = 3840, Height = 2160;
         public int Bitrate = 1000 * 1000;
         public VideoCodec Codec = VideoCodec.MPEG4;
         public InterpolationMode InterpolationMode = InterpolationMode.Bicubic;

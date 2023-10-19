@@ -38,7 +38,7 @@ namespace RimworldRendererMod
 
         public static int ResX = 1920, ResY = 1080;
         public static int ImagesPerSecond = 10;
-        private static string IPSS = "10"; // Images per second string.
+        private static string IPSS = "8"; // Images per second string.
         private static string ResXS = "1920", ResYS = "1080";
 
         public static InterpolationMode CurrentInterpolationMode = InterpolationMode.HighQualityBicubic;
@@ -80,7 +80,7 @@ namespace RimworldRendererMod
             Widgets.Label(new Rect(0, y, area.width, 40f), new GUIContent(" " + "ModDisplayName".Translate(), MenuOption.Icon));
             y += 36f;
             Text.Font = GameFont.Small;
-            Widgets.Label(new Rect(0, y, area.width, 30f), "by Epicguru (James B)");
+            Widgets.Label(new Rect(0, y, area.width, 30f), "by Epicguru/TheVillageGuy");
             y += 40f;
             Text.Font = GameFont.Medium;
 
@@ -221,9 +221,12 @@ namespace RimworldRendererMod
                 s = $"{"UI_Bitrate".Translate()}:";
                 w = Text.CalcSize(s).x;
                 Widgets.Label(new Rect(0, y, w, 30), s);
-                bitsPerSecondRaw = Widgets.HorizontalSlider(new Rect(w + 5, y + 12, area.width - 120 - w, 30), bitsPerSecondRaw, 1000, 1000 * 1000 * 40);
+                bitsPerSecondRaw = Widgets.HorizontalSlider(new Rect(w + 5, y + 12, area.width - 120 - w, 30), bitsPerSecondRaw, 1000, 1000 * 1000 * 120);
                 Widgets.Label(new Rect(area.width - 110, y, 120, 30), PrettyBitrate(bitsPerSecondRaw).ToString());
                 y += 40;
+
+                Text.Anchor = TextAnchor.MiddleLeft;
+                Label($"{"UI_QualitySuggestions".Translate()}");
 
                 s = $"{"UI_ImagesPerSecond".Translate()}:";
                 w = Text.CalcSize(s).x;

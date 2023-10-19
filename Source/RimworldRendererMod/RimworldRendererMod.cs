@@ -20,13 +20,13 @@ namespace RimworldRendererMod
         {
             Settings = GetSettings<MyModSettings>();
 
-            var harmony = new Harmony("com.github.Epicguru.RimworldRendererMod");
+            var harmony = new Harmony("TVG.RimworldRendererMod");
             harmony.PatchAll();
 
-            Log.Message("Patched in Timelapse 2000. Option should now be in main menu.");
+            Log.Message("Patched in Timelapse 2023 1.4 Option should now be in main menu.");
 
             BaseFolder = base.Content.RootDir;
-            Verse.Log.Message($"Timelapse2000 base dir: {BaseFolder}");
+            Verse.Log.Message($"Timelapse2023 base dir: {BaseFolder}");
 
             // Load from settings into UI.
             UI_Dialog.SourceFolder = RimworldRendererMod.Settings.DefaultBaseImagesPath;
