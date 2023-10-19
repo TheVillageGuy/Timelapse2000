@@ -1,4 +1,4 @@
-# Timelapse 2023 Mod
+# Timelapse 2023
 
 Original readme by Epicguru
 
