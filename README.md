@@ -1,5 +1,8 @@
 # Timelapse 2023
 
+Small changes: default images per second set to 8. Works better for some reason.
+Added a line with suggestions for HD, 4K and 8K settings.
+
 Original readme by Epicguru
 
 # Timelapse 2020 Mod
