@@ -5,7 +5,7 @@ Added a line with suggestions for HD, 4K and 8K settings.
 
 Original readme by Epicguru
 
-# Timelapse 2020 Mod
+# Timelapse 2000 Mod
 Here is the source code for my Timelapse 2000 Mod, which is used to create timelapse videos from a sequence of images.
 Integrates seamlessly into the Rimworld game.
 
